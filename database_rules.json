@@ -1,0 +1,22 @@
+{
+  "rules": {
+    "games": {
+      "$code": {
+        ".read": "auth != null",
+        ".write": "auth != null && (!data.exists() || data.child('hostUid').val() === auth.uid)",
+        "players": {
+          "$pid": {
+            ".write": "auth != null && !data.exists() && newData.child('uid').val() === auth.uid && newData.child('score').val() === 0 && newData.child('name').val().length <= 20"
+          }
+        },
+        "answers": {
+          "$q": {
+            "$pid": {
+              ".write": "auth != null && !data.exists() && root.child('games').child($code).child('players').child($pid).child('uid').val() === auth.uid && newData.child('t').val() === now && newData.child('a').isNumber() && newData.child('a').val() >= 0 && newData.child('a').val() <= 3"
+            }
+          }
+        }
+      }
+    }
+  }
+}
